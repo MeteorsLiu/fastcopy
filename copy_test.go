@@ -6,8 +6,9 @@ import (
 )
 
 const (
-	GB   = 1024 * 1024 * 1024
-	SIZE = 32768
+	GB       = 1024 * 1024 * 1024
+	SIZE     = 32768
+	alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
 )
 
 func getLog(t *testing.T, name string, written uint64, last time.Time) {
@@ -44,8 +45,8 @@ func checkDstFloat32(t *testing.T, dst []float32) {
 
 // 1 byte
 func TestCopy(t *testing.T) {
-	src := make([]byte, 16383)
-	dst := make([]byte, 16383)
+	src := make([]byte, SIZE)
+	dst := make([]byte, SIZE)
 
 	for i := 0; i < len(src); i++ {
 		src[i] = byte(i)
@@ -56,10 +57,25 @@ func TestCopy(t *testing.T) {
 	checkDstByte(t, dst)
 }
 
+func TestCopySlice(t *testing.T) {
+	dst := make([]int, 2000)
+	src := make([]int, 100)
+
+	for i := 0; i < len(src); i++ {
+		src[i] = i
+	}
+	var n int
+	for i := 0; i < 20; i++ {
+		n += Copy(dst[n:], src)
+	}
+	t.Log(hasERMS, isX64, dst)
+
+}
+
 // 8 byte
 func TestCopyInt(t *testing.T) {
-	src := make([]int, 16383)
-	dst := make([]int, 16383)
+	src := make([]int, SIZE)
+	dst := make([]int, SIZE)
 
 	for i := 0; i < len(src); i++ {
 		src[i] = i
@@ -72,8 +88,8 @@ func TestCopyInt(t *testing.T) {
 
 // 4 byte
 func TestCopyFloat32(t *testing.T) {
-	src := make([]float32, 16383)
-	dst := make([]float32, 16383)
+	src := make([]float32, SIZE)
+	dst := make([]float32, SIZE)
 
 	for i := 0; i < len(src); i++ {
 		src[i] = float32(i)
