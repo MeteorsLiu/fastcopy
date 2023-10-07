@@ -31,6 +31,9 @@ func Copy[T CanMove](dst, src []T) (n int) {
 	if n > len(dst) {
 		n = len(dst)
 	}
+	if n == 0 {
+		return
+	}
 	elem := unsafe.Sizeof(src[0])
 	size := elem * uintptr(n)
 
