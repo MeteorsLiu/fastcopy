@@ -2,19 +2,11 @@ package fastcopy
 
 import (
 	"testing"
-	"time"
 )
 
 const (
-	GB       = 1024 * 1024 * 1024
-	SIZE     = 32768
-	alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
+	SIZE = 32768
 )
-
-func getLog(t *testing.T, name string, written uint64, last time.Time) {
-	b := written / uint64(time.Since(last).Seconds())
-	t.Log(name+" Output: ", b/GB, "Gb/s ", b, "B/s")
-}
 
 func checkDstByte(t *testing.T, dst []byte) {
 	for n, i := range dst {
