@@ -57,26 +57,6 @@ func TestCopy(t *testing.T) {
 	checkDstByte(t, dst)
 }
 
-func TestOverlap(t *testing.T) {
-	src := make([]byte, 256)
-	for i := 1; i < len(src); i++ {
-		src[i] = byte(i)
-	}
-
-	CopyMOVSB(src, src[1:])
-
-	t.Log(src)
-
-	clear(src)
-	for i := 1; i < len(src); i++ {
-		src[i] = byte(i)
-	}
-
-	copy(src, src[1:])
-
-	t.Log(src)
-}
-
 func TestCopySlice(t *testing.T) {
 	dst := make([]int, 2000)
 	src := make([]int, 100)
@@ -150,37 +130,26 @@ func BenchmarkGoCopy(b *testing.B) {
 	}
 }
 
-func TestOutput(t *testing.T) {
-	src := make([]byte, SIZE)
-	for i := 0; i < len(src); i++ {
-		src[i] = 1
-	}
-	dst := make([]byte, SIZE)
-	zero := make([]byte, SIZE)
-	written := uint64(0)
-	now := time.Now()
+var largeBufSizes = []int{
+	8192, 16384, 32768,
+}
 
-	for time.Since(now).Seconds() < 11 {
-		Copy(dst, src)
-		written += SIZE
+func BenchmarkCopyOutput(b *testing.B) {
+	benchmarkSizes(b, largeBufSizes, func(b *testing.B, n int) {
+		x := make([]byte, n)
+		y := make([]byte, n)
+		for i := 0; i < b.N; i++ {
+			Copy(x, y)
+		}
+	})
+}
 
-		Copy(dst, zero)
-		written += SIZE
-
-	}
-
-	getLog(t, "optimized copy", written, now)
-
-	clear(dst)
-	written = uint64(0)
-	now = time.Now()
-
-	for time.Since(now).Seconds() < 11 {
-		written += uint64(copy(dst, src))
-
-		written += uint64(copy(dst, zero))
-	}
-
-	getLog(t, "copy", written, now)
-
+func BenchmarkCopyGoOutput(b *testing.B) {
+	benchmarkSizes(b, largeBufSizes, func(b *testing.B, n int) {
+		x := make([]byte, n)
+		y := make([]byte, n)
+		for i := 0; i < b.N; i++ {
+			copy(x, y)
+		}
+	})
 }
