@@ -57,6 +57,26 @@ func TestCopy(t *testing.T) {
 	checkDstByte(t, dst)
 }
 
+func TestOverlap(t *testing.T) {
+	src := make([]byte, 256)
+	for i := 1; i < len(src); i++ {
+		src[i] = byte(i)
+	}
+
+	CopyMOVSB(src, src[1:])
+
+	t.Log(src)
+
+	clear(src)
+	for i := 1; i < len(src); i++ {
+		src[i] = byte(i)
+	}
+
+	copy(src, src[1:])
+
+	t.Log(src)
+}
+
 func TestCopySlice(t *testing.T) {
 	dst := make([]int, 2000)
 	src := make([]int, 100)

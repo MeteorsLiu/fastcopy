@@ -2,8 +2,8 @@
 
 // func copy_movsq(to, from unsafe.Pointer, n uintptr) (left, copied uintptr)
 TEXT ·copy_movsq(SB),NOSPLIT,$0
-    MOVQ dst+0(FP), DI
-    MOVQ src+8(FP), SI
+    MOVQ to+0(FP), DI
+    MOVQ from+8(FP), SI
     MOVQ n+16(FP), BX 
     MOVQ BX, AX
     MOVQ BX, CX 

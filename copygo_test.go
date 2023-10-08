@@ -57,7 +57,7 @@ func TestMemmoveAlias(t *testing.T) {
 	for n := 0; n <= size; n++ {
 		for x := 0; x <= size-n; x++ { // src offset
 			for y := 0; y <= size-n; y++ { // dst offset
-				Copy(buf[y:y+n], buf[x:x+n])
+				copy(buf[y:y+n], buf[x:x+n])
 				for i := 0; i < y; i++ {
 					if buf[i] != byte(i) {
 						t.Fatalf("prefix buf[%d] = %d", i, buf[i])
