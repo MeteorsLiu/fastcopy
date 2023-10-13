@@ -2,6 +2,7 @@ package fastcopy
 
 import (
 	"testing"
+	"unsafe"
 )
 
 const (
@@ -33,6 +34,13 @@ func checkDstFloat32(t *testing.T, dst []float32) {
 			return
 		}
 	}
+}
+
+func TestCanMovs(t *testing.T) {
+	x := make([]byte, 32+16)
+	a := x[16 : 32+16]
+	b := x[1 : 32+1]
+	t.Log(can_movs(unsafe.Pointer(&a[0]), unsafe.Pointer(&b[0]), 32))
 }
 
 // 1 byte

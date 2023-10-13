@@ -57,7 +57,7 @@ func TestMemmoveAlias(t *testing.T) {
 	for n := 0; n <= size; n++ {
 		for x := 0; x <= size-n; x++ { // src offset
 			for y := 0; y <= size-n; y++ { // dst offset
-				copy(buf[y:y+n], buf[x:x+n])
+				Copy(buf[y:y+n], buf[x:x+n])
 				for i := 0; i < y; i++ {
 					if buf[i] != byte(i) {
 						t.Fatalf("prefix buf[%d] = %d", i, buf[i])
@@ -92,9 +92,12 @@ var bufSizes = []int{
 	0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
 	32, 64, 128, 256, 512, 1024, 2048, 4096,
 }
+
 var bufSizesOverlap = []int{
 	32, 64, 128, 256, 512, 1024, 2048, 4096,
 }
+
+//var bufSizesOverlap = largeBufSizes
 
 func BenchmarkMemmove(b *testing.B) {
 	benchmarkSizes(b, bufSizes, func(b *testing.B, n int) {
