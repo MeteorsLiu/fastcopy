@@ -23,6 +23,7 @@ var (
 //go:linkname memmove runtime.memmove
 func memmove(to, from unsafe.Pointer, n uintptr)
 
+// implement in memmove_movsb.s. prevent converting from unsafe.Pointer to uintptr .
 func can_movs(to, from unsafe.Pointer, n uintptr) (ok bool)
 func copy_movsb(to, from unsafe.Pointer, n uintptr)
 func copy_movsq(to, from unsafe.Pointer, n uintptr) (left, copied uintptr)
@@ -77,7 +78,7 @@ func CopyMOVSB[T CanMove](dst, src []T) (n int) {
 	if can_movs(dstPtr, srcPtr, nptr) {
 		copy_movsb(dstPtr, srcPtr, size)
 	} else {
-		memmove(dstPtr, srcPtr, nptr)
+		memmove(dstPtr, srcPtr, size)
 	}
 	return
 }
@@ -110,7 +111,7 @@ func CopyMOVSQ[T CanMove](dst, src []T) (n int) {
 			)
 		}
 	} else {
-		memmove(dstPtr, srcPtr, nptr)
+		memmove(dstPtr, srcPtr, size)
 	}
 	return
 }

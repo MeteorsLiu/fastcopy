@@ -41,6 +41,13 @@ func TestCanMovs(t *testing.T) {
 	a := x[16 : 32+16]
 	b := x[1 : 32+1]
 	t.Log(can_movs(unsafe.Pointer(&a[0]), unsafe.Pointer(&b[0]), 32))
+
+	c := make([]byte, 32)
+	d := make([]byte, 32)
+	t.Log(can_movs(unsafe.Pointer(&c[0]), unsafe.Pointer(&d[0]), 32))
+
+	c = c[8:]
+	t.Log(can_movs(unsafe.Pointer(&c[0]), unsafe.Pointer(&d[0]), 32))
 }
 
 // 1 byte
@@ -131,7 +138,7 @@ func BenchmarkGoCopy(b *testing.B) {
 }
 
 var largeBufSizes = []int{
-	8192, 16384, 32768,
+	1024, 2048, 4096, 8192, 15500, 16000, 16384, 25000, 32768, 65536,
 }
 
 func BenchmarkCopyOutput(b *testing.B) {
@@ -140,6 +147,26 @@ func BenchmarkCopyOutput(b *testing.B) {
 		y := make([]byte, n)
 		for i := 0; i < b.N; i++ {
 			Copy(x, y)
+		}
+	})
+}
+
+func BenchmarkMOVSBOutput(b *testing.B) {
+	benchmarkSizes(b, largeBufSizes, func(b *testing.B, n int) {
+		x := make([]byte, n)
+		y := make([]byte, n)
+		for i := 0; i < b.N; i++ {
+			CopyMOVSB(x, y)
+		}
+	})
+}
+
+func BenchmarkMOVSQOutput(b *testing.B) {
+	benchmarkSizes(b, largeBufSizes, func(b *testing.B, n int) {
+		x := make([]byte, n)
+		y := make([]byte, n)
+		for i := 0; i < b.N; i++ {
+			CopyMOVSQ(x, y)
 		}
 	})
 }
